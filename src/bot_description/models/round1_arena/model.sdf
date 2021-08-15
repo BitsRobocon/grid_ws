@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+    <model name="round1_arena">
+        <static>true</static>
+        <pose> 0 0 0 0 0 0 </pose>
+        <link name = "arena">
+            <collision name="collision">
+                <geometry>
+                    <mesh>
+                        <uri>model://round1_arena/meshes/arena_base.stl</uri>
+                        <scale>0.001 0.001 0.001</scale>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <mesh>
+                        <uri>model://round1_arena/meshes/arena_base.stl</uri>
+                        <scale>0.001 0.001 0.001</scale>
+                    </mesh>
+                </geometry>
+                <cast_shadows>false</cast_shadows>
+                <material>
+                    <ambient>0.1 0.1 0.1 1.0</ambient>
+                    <diffuse>0.56666695 0.56666695 0.56666695 1.0</diffuse>
+                    <specular>0.6000003 0.6000003 0.6000003 1.0</specular>
+                    <lighting>1</lighting>
+                </material>
+            </visual>
+        </link>
+    </model>
+</sdf>

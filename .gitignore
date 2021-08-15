@@ -1,0 +1,22 @@
+# Ignoring sub-directories related to build, devel and dependencies
+src/control_toolbox/
+src/control_msgs/
+src/four_wheel_steering_msgs/
+src/realtime_tools/
+src/ros_control/
+src/ros_controllers/
+src/urdf_geometry_parser/
+.catkin_tools/
+.vscode
+build/
+devel/**
+logs/
+
+# Allowing setup_env.bash to be added to the workspace
+!devel/setup_env.bash
+!setup_env.bash
+
+# Ignoring .rosinstall and other uneccessary files
+.rosinstall
+.rosinstall.bak
+*.pdf

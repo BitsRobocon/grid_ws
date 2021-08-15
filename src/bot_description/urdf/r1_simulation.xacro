@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="r1_simulation" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="($find bot_description)/urdf/bot_grid.xacro" />
+
+<xacro:include filename="($find bot_description)/urdf/arena_r1.xacro" />
+
+<link name="world" />
+
+<joint type="fixed" name="world_base">
+    <origin xyz="0 0 0" rpy = "0 0 0" />
+    <parent link="world"/>
+    <child link="arena_r1"/>
+</joint>
+
+<link name="bot_grid" />
+</robot>

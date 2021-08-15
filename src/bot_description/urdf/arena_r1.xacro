@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<robot name="arena_r1" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find bot_description)/urdf/materials_arena.xacro" />
+<link name="r1_arena">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.8922758586627785 -1.587172872955623 0.019946141935233423"/>
+    <mass value="200.30699829761147"/>
+    <inertia ixx="161.780484" ixy="-0.422674" ixz="0.046689" iyy="44.857916" iyz="0.006498" izz="206.592979"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://bot_description/meshes/arena_base.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://bot_description/meshes/arena_base.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+</robot>

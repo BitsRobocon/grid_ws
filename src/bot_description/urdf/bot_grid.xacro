@@ -1,112 +1,121 @@
 <?xml version="1.0" ?>
 <robot name="bot_grid" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<xacro:include filename="$(find bot_description)/urdf/materials_bot.xacro" />
-<xacro:include filename="$(find bot_description)/urdf/bot_grid.trans" />
-<xacro:include filename="$(find bot_description)/urdf/bot_grid.gazebo" />
-<link name="base_link">
-  <inertial>
-    <origin rpy="0 0 0" xyz="0.0 0.0 0.027415539003148855"/>
-    <mass value="1.1517833070915058"/>
-    <inertia ixx="0.001068" ixy="-2.4e-05" ixz="-8e-06" iyy="0.000918" iyz="4.8e-05" izz="0.001472"/>
-  </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <xacro:include filename="$(find bot_description)/urdf/materials_bot.xacro" />
+  <xacro:include filename="$(find bot_description)/urdf/bot_grid.trans" />
+  <xacro:include filename="$(find bot_description)/urdf/bot_grid.gazebo" />
+  <xacro:arg name="bot_uid" default="B1"/>
+  <xacro:macro name="bot_grid_uid" params="uid">
 
-<link name="rod_1">
-  <inertial>
-    <origin rpy="0 0 0" xyz="-0.03412970107262531 3.283082382239677e-07 0.000999532672142013"/>
-    <mass value="0.004917856385932786"/>
-    <inertia ixx="0.0" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="2e-06"/>
-  </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="-0.021523 -0.007087 -0.04083"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/rod_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="-0.021523 -0.007087 -0.04083"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/rod_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+    <link name="${uid}_base_link">
+      <inertial>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.027415539003148855"/>
+        <mass value="1.1517833070915058"/>
+        <inertia ixx="0.001068" ixy="-2.4e-05" ixz="-8e-06" iyy="0.000918" iyz="4.8e-05" izz="0.001472"/>
+      </inertial>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <link name="${uid}_release_rod">
+      <inertial>
+        <origin rpy="0 0 0" xyz="-0.03412970107262531 3.283082382239677e-07 0.000999532672142013"/>
+        <mass value="0.004917856385932786"/>
+        <inertia ixx="0.0" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="2e-06"/>
+      </inertial>
+      <visual>
+        <origin rpy="0 0 0" xyz="-0.021523 -0.007087 -0.04083"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/rod_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="-0.021523 -0.007087 -0.04083"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/rod_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <link name="${uid}_right_wheel">
+      <inertial>
+        <origin rpy="0 0 0" xyz="-0.0033351165545466577 4.777016239451704e-07 -1.512305142191417e-07"/>
+        <mass value="0.03301117951310708"/>
+        <inertia ixx="8e-06" ixy="0.0" ixz="-0.0" iyy="4e-06" iyz="-0.0" izz="4e-06"/>
+      </inertial>
+      <visual>
+        <origin rpy="0 0 0" xyz="-0.0659 0.032207 -0.021406"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/wheel_right_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="-0.0659 0.032207 -0.021406"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/wheel_right_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <link name="${uid}_left_wheel">
+      <inertial>
+        <origin rpy="0 0 0" xyz="0.0033353413496784445 -6.080566113814134e-07 -1.5123052405849324e-07"/>
+        <mass value="0.03301117951419933"/>
+        <inertia ixx="8e-06" ixy="0.0" ixz="0.0" iyy="4e-06" iyz="0.0" izz="4e-06"/>
+      </inertial>
+      <visual>
+        <origin rpy="0 0 0" xyz="0.065896 0.032194 -0.021406"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/wheel_left_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0.065896 0.032194 -0.021406"/>
+        <geometry>
+          <mesh filename="package://bot_description/meshes/wheel_left_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <joint name="${uid}_release_servo_joint" type="continuous">
+      <origin rpy="0 0 0" xyz="0.021523 0.007087 0.04083"/>
+      <parent link="${uid}_base_link"/>
+      <child link="${uid}_release_rod"/>
+      <axis xyz="-0.0 0.0 1.0"/>
+    </joint>
+    
+    <joint name="${uid}_right_motor_joint" type="continuous">
+      <origin rpy="0 0 0" xyz="0.0659 -0.032207 0.021406"/>
+      <parent link="${uid}_base_link"/>
+      <child link="${uid}_right_wheel"/>
+      <axis xyz="-1.0 0.0 -0.0"/>
+    </joint>
+    
+    <joint name="${uid}_left_motor_joint" type="continuous">
+      <origin rpy="0 0 0" xyz="-0.065896 -0.032194 0.021406"/>
+      <parent link="${uid}_base_link"/>
+      <child link="${uid}_left_wheel"/>
+      <axis xyz="1.0 -0.0 0.0"/>
+    </joint>
 
-<link name="wheel_right_1">
-  <inertial>
-    <origin rpy="0 0 0" xyz="-0.0033351165545466577 4.777016239451704e-07 -1.512305142191417e-07"/>
-    <mass value="0.03301117951310708"/>
-    <inertia ixx="8e-06" ixy="0.0" ixz="-0.0" iyy="4e-06" iyz="-0.0" izz="4e-06"/>
-  </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="-0.0659 0.032207 -0.021406"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/wheel_right_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="-0.0659 0.032207 -0.021406"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/wheel_right_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  </xacro:macro>
 
-<link name="wheel_left_1">
-  <inertial>
-    <origin rpy="0 0 0" xyz="0.0033353413496784445 -6.080566113814134e-07 -1.5123052405849324e-07"/>
-    <mass value="0.03301117951419933"/>
-    <inertia ixx="8e-06" ixy="0.0" ixz="0.0" iyy="4e-06" iyz="0.0" izz="4e-06"/>
-  </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="0.065896 0.032194 -0.021406"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/wheel_left_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="0.065896 0.032194 -0.021406"/>
-    <geometry>
-      <mesh filename="package://bot_description/meshes/wheel_left_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<joint name="Rev3" type="continuous">
-  <origin rpy="0 0 0" xyz="0.021523 0.007087 0.04083"/>
-  <parent link="base_link"/>
-  <child link="rod_1"/>
-  <axis xyz="-0.0 0.0 1.0"/>
-</joint>
-
-<joint name="Rev4" type="continuous">
-  <origin rpy="0 0 0" xyz="0.0659 -0.032207 0.021406"/>
-  <parent link="base_link"/>
-  <child link="wheel_right_1"/>
-  <axis xyz="-1.0 0.0 -0.0"/>
-</joint>
-
-<joint name="Rev5" type="continuous">
-  <origin rpy="0 0 0" xyz="-0.065896 -0.032194 0.021406"/>
-  <parent link="base_link"/>
-  <child link="wheel_left_1"/>
-  <axis xyz="1.0 -0.0 0.0"/>
-</joint>
+  <xacro:bot_grid_uid uid="$(arg bot_uid)" />
+  <xacro:bot_trans_uid uid="$(arg bot_uid)" />
+  <xacro:bot_gazebo_uid uid="$(arg bot_uid)" />
 
 </robot>

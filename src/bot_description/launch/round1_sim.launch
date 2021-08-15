@@ -1,9 +1,12 @@
 <launch>
     <arg name="world" default="$(find bot_description)/worlds/round1.world"/>
-    <param command="$(find xacro)/xacro $(find bot_description)/urdf/bot_grid.xacro" name="robot_description"/>
     <arg default="$(find bot_description)/urdf/bot_grid.xacro" name="model"/>
     <arg default="true" name="gui"/>
     <arg default="$(find bot_description)/launch/urdf_bot.rviz" name="rvizconfig"/>
+    <arg default="B1" name="bot1_uid"/>
+
+    <param command="$(find xacro)/xacro '$(find bot_description)/urdf/bot_grid.xacro' bot_uid:=$(arg bot1_uid)" name="robot_description"/>
+
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
       <arg name="world_name" value="$(arg world)"/>
       <arg name="paused" value="true"/>
@@ -13,7 +16,9 @@
       <arg name="debug" value="false"/>
       <arg name="headless" value="false"/>
     </include>
+
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 1.521960 -y 0.079241  -z 0 -model grid_bot_1" />
+
     <!-- <param command="$(find xacro)/xacro $(arg model)" name="robot_description"/>
     <param name="use_gui" value="$(arg gui)"/>
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>

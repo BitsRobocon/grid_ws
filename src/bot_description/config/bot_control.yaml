@@ -1,0 +1,13 @@
+bot_grid:
+
+  right_velocity_controller:
+    type: effort_controllers/JointVelocityController joint: ${uid}_right_motor_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  left_velocity_controller:
+    type: effort_controllers/JointVelocityController joint: ${uid}_left_motor_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  servo_position_controller:
+    type: effort_controllers/JointPositionController joint: ${uid}_release_servo_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}

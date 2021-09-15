@@ -8,9 +8,10 @@ project(my_controller)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   controller_interface
   pluginlib
-  roscpp
+  geometry_msgs
 )
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -20,12 +21,36 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-catkin_package( INCLUDE_DIRS src 
+catkin_package( 
+  INCLUDE_DIRS include
 	LIBRARIES my_controller  
-	CATKIN_DEPENDS pluginlib roscpp
-  DEPENDS Boost
+	CATKIN_DEPENDS
+    roscpp
+    pluginlib
+    controller_interface
+    geometry_msgs
+  DEPENDS
+    Boost
 )
 
-add_library( my_controller_lib src/my_controller.cpp )
-target_link_libraries( my_controller_lib ${catkin_LIBRARIES} )
+add_library( 
+  ${PROJECT_NAME}
+  src/my_controller.cpp 
+)
 
+target_link_libraries(${PROJECT_NAME} 
+  ${catkin_LIBRARIES}
+)
+
+install(
+    TARGETS ${PROJECT_NAME}
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+  PATTERN ".svn" EXCLUDE
+)

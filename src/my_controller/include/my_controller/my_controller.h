@@ -12,7 +12,7 @@ namespace my_controller_ns
 		void starting(const ros::Time& time);
 		void stopping(const ros::Time& time);
 
-	private:
+	protected:
 		hardware_interface::JointHandle joint_;
 		double init_pos_;
 	};

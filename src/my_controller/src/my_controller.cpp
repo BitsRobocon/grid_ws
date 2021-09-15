@@ -1,15 +1,15 @@
-#include "my_controller.h"
-#include "ros/ros.h"
-#include "std_msgs/Twist.h"
+#include <my_controller/my_controller.h>
+#include <ros/ros.h>
+#include <geometry_msgs/Twist.h>
 
-actual_msg = Twist(); // global velocity ss
-point_msg = Twist();
+geometry_msgs::Twist actual_msg; // global velocity ss
+geometry_msgs::Twist point_msg;
 ros::NodeHandle nh;
-double error = 0 
-double integral = 0 
-double kp = 100
-double kd = 1
-double ki = 0.01
+double error = 0 ;
+double integral = 0; 
+double kp = 100;
+double kd = 1;
+double ki = 0.01;
 
 namespace my_controller_ns
 {
@@ -85,15 +85,19 @@ namespace my_controller_ns
 			// vl = vr = PID + actual_msg.linear.y;
 		}
 
-		if (vr > 255) 
+		if (vr > 255){
 			vr = 255;
-		else if (vr < 0) 
+		}
+		else if (vr < 0) {
 			vr = 0;
+		}
 
-		if (vl > 255)
+		if (vl > 255) {
 			vl = 255;
-		else if (vl < 0)
+		}
+		else if (vl < 0) {
 			vl = 0;
+		}
 
 		joint_l.setCommand(vl);
 		joint_r.setCommand(vr);

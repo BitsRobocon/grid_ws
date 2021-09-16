@@ -1,19 +1,20 @@
-#include <my_controller/my_controller.h>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-
-geometry_msgs::Twist actual_msg; // global velocity ss
-geometry_msgs::Twist point_msg;
-ros::NodeHandle nh;
-double error = 0 ;
-double integral = 0; 
-double kp = 100;
-double kd = 1;
-double ki = 0.01;
+#include <my_controller/template.h>
 
 namespace my_controller_ns
 {
-	
+	geometry_msgs::Twist actual_msg; // global velocity ss
+	geometry_msgs::Twist point_msg;
+	ros::NodeHandle nh;
+
+	double vl = 0.0, vr = 0.0;
+	double prev_error_linear = 0, prev_error_ang = 0;
+	double integral_linear = 0, integral_ang = 0;
+	double kp_l = 100, kd_l = 1.0, ki_l = 0.01;
+	double kp_a = 100, kd_a = 1, ki_a = 0.01;
+	long counter = 0;
+
 	//Controller initialization
   	bool MyControllerClass::init(hardware_interface::VelocityJointInterface* hw) //, ros::NodeHandle &nh)
   	{
@@ -34,79 +35,67 @@ namespace my_controller_ns
     	return true;
 	}
 
-	void actualCallback(const geometry_msgs::Twist &msg)
-	{
-		if (msg.angular.z > 0)
-		{	
-			actual_msg = msg;
-			ROS_INFO_STREAM("Subscriber velocities:"
-							<< " linear=" << msg.linear.x << " angular=" << msg.angular.z);
-		}
+	void actualCallback(const geometry_msgs::Twist &msg1)
+	{	actual_msg = msg1;
 	}
 
-	void pointCallback(const geometry_msgs::Twist &msg)
-	{
-		if (msg.angular.z > 0)
-		{
-			point_msg = msg;
-			ROS_INFO_STREAM("Subscriber velocities:"
-							<< " linear=" << msg.linear.x << " angular=" << msg.angular.z);
-		}
+	void pointCallback(const geometry_msgs::Twist &msg2)
+	{	point_msg = msg2;
 	}
 
 	//Controller startup
   	void MyControllerClass::starting(const ros::Time& time) 
 	{
 		//Get initial position to use in the control procedure
-		// vl = joint_l.getVelocoty()
-		// vr = joint_r.getVelocoty()
-		vl = vr = 0;
+		// vl = joint_l.getVelocity()
+		// vr = joint_r.getVelocity()
+		vl = vr = point_msg.linear.y;
 	}
 
 	//Controller running
    void MyControllerClass::update(const ros::Time& time, const ros::Duration& period)
    { 
-	  	double l = 0.128;
-	  	double r = 0.0215;
+	  	double l = 0.128;	// wheel separation
+	  	double r = 0.0215;	// wheel radius
 
-	  	// int vl = point_msg.angular.z * (r - l / 2);
-	  	// int vr = point_msg.angular.z * (r + l / 2);
+		vr = point_msg.linear.y + point_msg.angular.z * (l/2.0)
+		vl = point_msg.linear.y - point_msg.angular.z * (l/2.0)
 
-		vl = vr = point_msg.linear.y;
-		if (point_msg.angular.z == 0)
-		{
-			double error = (point_msg.linear.y - actual_msg.linear.y) + (point_msg.angular.z - actual_msg.angular.z);
-			double diff = error - prev_error; 
-			integral += error;
-			double PID = error * kp + diff * kd + integral * ki;
-			prev_error = error;
-			vr += PID;
-			vl -= PID;
-			// vl = vr = PID + actual_msg.linear.y;
-		}
+		double error_linear = (point_msg.linear.y - actual_msg.linear.y);
+		double diff_linear = error_linear - prev_error_linear; 
+		integral_linear += error_linear;
+		double linear_pid = kp_l*error_linear + kd_l*diff_linear + ki_l*integral_linear;
+			
+		double error_ang = (point_msg.angular.z - actual_msg.angular.z);
+		double diff_ang = error_ang - prev_error_ang;
+		integral_ang += error_ang;
+		double ang_pid = kp_l*error_ang + kd_l*diff_ang + ki_l*integral_ang;
 
-		if (vr > 255){
+		vr = vr + linear_pid + ang_pid;
+		vl = vl + linear_pid - ang_pid;
+
+		prev_error_linear = error_linear;
+		prev_error_ang = error_ang;
+
+		if (vr > 255)
 			vr = 255;
-		}
-		else if (vr < 0) {
+		else if (vr < 0)
 			vr = 0;
-		}
 
-		if (vl > 255) {
+		if (vl > 255) 
 			vl = 255;
-		}
-		else if (vl < 0) {
+		else if (vl < 0)
 			vl = 0;
+
+		joint_l.setCommand((int)vl);
+		joint_r.setCommand((int)vr);
+
+		counter++;	// integral windup
+		if (counter % 50 == 0)
+		{
+			integral_ang = 0
+			integral_linear = 0
 		}
-
-		joint_l.setCommand(vl);
-		joint_r.setCommand(vr);
-
-	  	//---Perform a sinusoidal motion for joint shoulder_pan_joint
-	  	// double dpos = init_pos_ + 10 * sin(ros::Time::now().toSec());
-	  	// double cpos = joint_.getPosition();
-	  	// joint_.setCommand(-10 * (cpos - dpos)); //Apply command to the selected joint
-	  	//---
 
 	}
 

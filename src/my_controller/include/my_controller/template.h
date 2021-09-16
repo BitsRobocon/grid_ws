@@ -4,16 +4,16 @@
 
 
 namespace my_controller_ns 
-{	class MyControllerClass: public controller_interface::Controller<hardware_interface::PositionJointInterface>
+{	class MyControllerClass: public controller_interface::Controller<hardware_interface::VelocityJointInterface>
 	{
 	public:
-		bool init(hardware_interface::PositionJointInterface *hw); //, ros::NodeHandle &n
+		bool init(hardware_interface::VelocityJointInterface *hw); //, ros::NodeHandle &n
 		void update(const ros::Time& time, const ros::Duration& period);
 		void starting(const ros::Time& time);
 		void stopping(const ros::Time& time);
 
 	protected:
-		hardware_interface::JointHandle joint_;
-		double init_pos_;
+		hardware_interface::JointHandle joint_l;
+		hardware_interface::JointHandle joint_r;
 	};
 }

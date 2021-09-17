@@ -7,6 +7,8 @@ namespace my_controller_ns
 	geometry_msgs::Twist actual_msg; // global velocity ss
 	geometry_msgs::Twist point_msg;
 	ros::NodeHandle nh;
+	double l = 0.128;  // wheel separation
+	double r = 0.0215; // wheel radius
 
 	double vl = 0.0, vr = 0.0;
 	double prev_error_linear = 0, prev_error_ang = 0;
@@ -15,10 +17,19 @@ namespace my_controller_ns
 	double kp_a = 100, kd_a = 1, ki_a = 0.01;
 	long counter = 0;
 
+	void actualCallback(const geometry_msgs::Twist &msg1)
+	{
+		actual_msg = msg1;
+	}
+
+	void pointCallback(const geometry_msgs::Twist &msg2)
+	{
+		point_msg = msg2;
+	}
 	//Controller initialization
   	bool MyControllerClass::init(hardware_interface::VelocityJointInterface* hw) //, ros::NodeHandle &nh)
   	{
-		ros::init(argc, argv, "/controller");
+		// ros::init(argc, argv, "/controller");
 
 		ros::Subscriber sub1 = nh.subscribe("/cmd_vel", 1000, actualCallback);	// get actual velocity of bot
 		ros::Subscriber sub2 = nh.subscribe("/point_vel", 1000, pointCallback); // get velocity from point algo
@@ -35,31 +46,21 @@ namespace my_controller_ns
     	return true;
 	}
 
-	void actualCallback(const geometry_msgs::Twist &msg1)
-	{	actual_msg = msg1;
-	}
-
-	void pointCallback(const geometry_msgs::Twist &msg2)
-	{	point_msg = msg2;
-	}
-
 	//Controller startup
   	void MyControllerClass::starting(const ros::Time& time) 
 	{
 		//Get initial position to use in the control procedure
 		// vl = joint_l.getVelocity()
 		// vr = joint_r.getVelocity()
-		vl = vr = point_msg.linear.y;
+		vr = point_msg.linear.y + point_msg.angular.z * (l / 2.0);
+		vl = point_msg.linear.y - point_msg.angular.z * (l / 2.0);
 	}
 
 	//Controller running
    void MyControllerClass::update(const ros::Time& time, const ros::Duration& period)
    { 
-	  	double l = 0.128;	// wheel separation
-	  	double r = 0.0215;	// wheel radius
-
-		vr = point_msg.linear.y + point_msg.angular.z * (l/2.0)
-		vl = point_msg.linear.y - point_msg.angular.z * (l/2.0)
+		vr = point_msg.linear.y + point_msg.angular.z * (l/2.0);
+		vl = point_msg.linear.y - point_msg.angular.z * (l/2.0);
 
 		double error_linear = (point_msg.linear.y - actual_msg.linear.y);
 		double diff_linear = error_linear - prev_error_linear; 
@@ -93,8 +94,8 @@ namespace my_controller_ns
 		counter++;	// integral windup
 		if (counter % 50 == 0)
 		{
-			integral_ang = 0
-			integral_linear = 0
+			integral_ang = 0;
+			integral_linear = 0;
 		}
 
 	}

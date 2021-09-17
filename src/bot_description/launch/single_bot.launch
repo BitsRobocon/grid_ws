@@ -1,0 +1,24 @@
+<launch>
+    <arg name="robot_name"/>
+    <arg name="init_pose"/>
+
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+     args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"
+     respawn="false" output="screen" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+        <param name="publish_frequency" type="double" value="50"/>
+        <param name="use_tf_static" type="bool" value="false"/>
+    </node>
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <node pkg="fake_localization" type="fake_localization" name="fake_localization" output="screen" >
+        <param name="~odom_frame_id" value="odom" />
+        <param name="~base_frame_id" value="base_link"/>
+        <param name="~global_frame_id" value="map" />
+        <remap from="/base_pose_ground_truth" to="/odom" />
+    </node>
+    <remap from="map" to="/map" />
+
+    <!-- The odometry estimator, throttling, fake laser etc. go here -->
+    <!-- All the stuff as from usual robot launch file -->
+</launch>

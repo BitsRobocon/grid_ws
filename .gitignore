@@ -6,6 +6,8 @@ src/realtime_tools/
 src/ros_control/
 src/ros_controllers/
 src/urdf_geometry_parser/
+src/teb_local_planner_tutorials
+src/mpc_ros
 .catkin_tools/
 .vscode
 build/

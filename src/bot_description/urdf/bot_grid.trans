@@ -2,34 +2,34 @@
 <robot name="bot_grid" xmlns:xacro="http://www.ros.org/wiki/xacro" >
 <xacro:macro name="bot_trans_uid" params="uid">
   
-  <transmission name="${uid}_release_servo_trans">
+  <transmission name="release_servo_trans">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="${uid}_release_servo_joint">
+    <joint name="release_servo_joint">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
     </joint>
-    <actuator name="${uid}_release_servo">
+    <actuator name="release_servo">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   
-  <transmission name="${uid}_right_motor_trans">
+  <transmission name="right_motor_trans">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="${uid}_right_motor_joint">
+    <joint name="right_motor_joint">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
     </joint>
-    <actuator name="${uid}_right_motor">
+    <actuator name="right_motor">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   
-  <transmission name="${uid}_left_motor_trans">
+  <transmission name="left_motor_trans">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="${uid}_left_motor_joint">
+    <joint name="left_motor_joint">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
     </joint>
-    <actuator name="${uid}_left_motor">
+    <actuator name="left_motor">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>

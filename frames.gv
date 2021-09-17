@@ -1,0 +1,7 @@
+digraph G {
+"base_link" -> "base_body"[label=" Broadcaster: /bot1/robot_state_publisher\nAverage rate: 50.201\nBuffer length: 4.98\nMost recent transform: 9.72\nOldest transform: 4.74\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 9.238"[ shape=plaintext ] ;
+}->"base_link";
+}

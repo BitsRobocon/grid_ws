@@ -4,10 +4,8 @@
   <xacro:include filename="$(find bot_description)/urdf/materials_bot.xacro" />
   <xacro:include filename="$(find bot_description)/urdf/bot_grid.trans" />
   <xacro:include filename="$(find bot_description)/urdf/bot_grid.gazebo" />
-  <xacro:arg name="bot_uid" default="B1"/>
-  <xacro:macro name="bot_grid_uid" params="uid">
 
-    <link name="${uid}_base_link">
+    <link name="base_body">
       <inertial>
         <origin rpy="0 0 0" xyz="0.0 0.0 0.027415539003148855"/>
         <mass value="1.1517833070915058"/>
@@ -28,7 +26,11 @@
       </collision>
     </link>
     
-    <link name="${uid}_release_rod">
+    <link name="base_link">
+
+    </link>
+    
+    <link name="release_rod">
       <inertial>
         <origin rpy="0 0 0" xyz="-0.03412970107262531 3.283082382239677e-07 0.000999532672142013"/>
         <mass value="0.004917856385932786"/>
@@ -49,7 +51,7 @@
       </collision>
     </link>
     
-    <link name="${uid}_right_wheel">
+    <link name="right_wheel">
       <inertial>
         <origin rpy="0 0 0" xyz="-0.0033351165545466577 4.777016239451704e-07 -1.512305142191417e-07"/>
         <mass value="0.03301117951310708"/>
@@ -70,7 +72,7 @@
       </collision>
     </link>
     
-    <link name="${uid}_left_wheel">
+    <link name="left_wheel">
       <inertial>
         <origin rpy="0 0 0" xyz="0.0033353413496784445 -6.080566113814134e-07 -1.5123052405849324e-07"/>
         <mass value="0.03301117951419933"/>
@@ -91,30 +93,37 @@
       </collision>
     </link>
     
-    <joint name="${uid}_release_servo_joint" type="continuous">
+    <joint name="release_servo_joint" type="continuous">
       <origin rpy="0 0 0" xyz="0.021523 0.007087 0.04083"/>
-      <parent link="${uid}_base_link"/>
-      <child link="${uid}_release_rod"/>
+      <parent link="base_link"/>
+      <child link="release_rod"/>
       <axis xyz="-0.0 0.0 1.0"/>
     </joint>
     
-    <joint name="${uid}_right_motor_joint" type="continuous">
+    <joint name="right_motor_joint" type="continuous">
       <origin rpy="0 0 0" xyz="0.0659 -0.032207 0.021406"/>
-      <parent link="${uid}_base_link"/>
-      <child link="${uid}_right_wheel"/>
+      <parent link="base_link"/>
+      <child link="right_wheel"/>
       <axis xyz="-1.0 0.0 -0.0"/>
     </joint>
     
-    <joint name="${uid}_left_motor_joint" type="continuous">
+    <joint name="left_motor_joint" type="continuous">
       <origin rpy="0 0 0" xyz="-0.065896 -0.032194 0.021406"/>
-      <parent link="${uid}_base_link"/>
-      <child link="${uid}_left_wheel"/>
+      <parent link="base_link"/>
+      <child link="left_wheel"/>
       <axis xyz="1.0 -0.0 0.0"/>
+    </joint>
+
+    <joint name="base_joint" type="fixed">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+      <parent link="base_link"/>
+      <child link="base_body"/>
+      <axis xyz="0.0 0.0 0.0"/>
     </joint>
 
     <transmission name="tran1">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${uid}_release_servo_joint">
+      <joint name="release_servo_joint">
         <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="servo1">
@@ -125,7 +134,7 @@
 
     <transmission name="tran2">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${uid}_right_motor_joint">
+      <joint name="right_motor_joint">
         <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
       <actuator name="right_motor">
@@ -136,7 +145,7 @@
 
     <transmission name="tran3">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${uid}_left_motor_joint">
+      <joint name="left_motor_joint">
         <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
       <actuator name="left_motor">
@@ -151,11 +160,5 @@
         <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
       </plugin>
     </gazebo>
-
-  </xacro:macro>
-
-  <xacro:bot_grid_uid uid="$(arg bot_uid)" />
-  <xacro:bot_trans_uid uid="$(arg bot_uid)" />
-  <xacro:bot_gazebo_uid uid="$(arg bot_uid)" />
 
 </robot>

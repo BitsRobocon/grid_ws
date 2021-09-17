@@ -55,14 +55,14 @@ using namespace Eigen;
 class MPCNode
 {
     public:
-        MPCNode();
+        MPCNode(std::string robot_ns, bool use_ns);
         ~MPCNode();
         int get_thread_numbers();
         
     private:
         ros::NodeHandle _nh;
         ros::Subscriber _sub_odom, _sub_gen_path, _sub_path, _sub_goal, _sub_amcl;
-        ros::Publisher _pub_totalcost, _pub_ctecost, _pub_ethetacost,_pub_odompath, _pub_twist, _pub_ackermann, _pub_mpctraj;
+        ros::Publisher _pub_totalcost, _pub_ctecost, _pub_ethetacost,_pub_odompath, _pub_twist, _pub_mpctraj;
         ros::Timer _timer1;
         tf::TransformListener _tf_listener;
 
@@ -74,6 +74,7 @@ class MPCNode
 
         string _globalPath_topic, _goal_topic;
         string _map_frame, _odom_frame, _car_frame;
+        string _robot_ns;
 
         MPC _mpc;
         map<string, double> _mpc_params;
@@ -85,6 +86,7 @@ class MPCNode
         double _pathLength, _goalRadius, _waypointsDist;
         int _controller_freq, _downSampling, _thread_numbers;
         bool _goal_received, _goal_reached, _path_computed, _pub_twist_flag, _debug_info, _delay_mode;
+        bool _use_ns;
 
         double polyeval(Eigen::VectorXd coeffs, double x);
         Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals, int order);
@@ -107,7 +109,9 @@ class MPCNode
 }; // end of class
 
 
-MPCNode::MPCNode()
+MPCNode::MPCNode(std::string robot_ns, bool use_ns) 
+: _robot_ns(robot_ns),
+  _use_ns(use_ns)
 {
     //Private parameters handler
     ros::NodeHandle pn("~");
@@ -148,6 +152,14 @@ MPCNode::MPCNode()
     pn.param<std::string>("odom_frame", _odom_frame, "odom");
     pn.param<std::string>("car_frame", _car_frame, "base_footprint" );
 
+    if(_use_ns) {
+        _globalPath_topic = _robot_ns + "/" + _globalPath_topic;
+        _goal_topic = _robot_ns + "/" + _goal_topic;
+        _odom_frame = _robot_ns + "/" + _odom_frame;
+        _car_frame = _robot_ns + "/" + _car_frame;
+    }
+
+
     //Display the parameters
     cout << "\n===== Parameters =====" << endl;
     cout << "pub_twist_cmd: "  << _pub_twist_flag << endl;
@@ -161,11 +173,29 @@ MPCNode::MPCNode()
     cout << "mpc_w_etheta: "  << _w_etheta << endl;
     cout << "mpc_max_angvel: "  << _max_angvel << endl;
 
+    if(_use_ns) {
+        //Publishers and Subscribers
+        _sub_odom   = _nh.subscribe(_robot_ns + "/odom", 1, &MPCNode::odomCB, this);
+        _sub_path   = _nh.subscribe(_globalPath_topic, 1, &MPCNode::pathCB, this);
+        _sub_gen_path   = _nh.subscribe(_robot_ns + "desired_path", 1, &MPCNode::desiredPathCB, this);
+        _sub_goal   = _nh.subscribe(_goal_topic, 1, &MPCNode::goalCB, this);
+        _sub_amcl   = _nh.subscribe(_robot_ns + "/amcl_pose", 5, &MPCNode::amclCB, this);
+        
+        _pub_odompath  = _nh.advertise<nav_msgs::Path>(_robot_ns + "/mpc_reference", 1); // reference path for MPC ///mpc_reference 
+        _pub_mpctraj   = _nh.advertise<nav_msgs::Path>(_robot_ns + "/mpc_trajectory", 1);// MPC trajectory output
+        //_pub_ackermann = _nh.advertise<ackermann_msgs::AckermannDriveStamped>("/ackermann_cmd", 1);
+        if(_pub_twist_flag)
+            _pub_twist = _nh.advertise<geometry_msgs::Twist>(_robot_ns + "/cmd_vel", 1); //for stage (Ackermann msg non-supported)
+        
+        _pub_totalcost  = _nh.advertise<std_msgs::Float32>(_robot_ns + "/total_cost", 1); // Global path generated from another source
+        _pub_ctecost  = _nh.advertise<std_msgs::Float32>(_robot_ns + "/cross_track_error", 1); // Global path generated from another source
+        _pub_ethetacost  = _nh.advertise<std_msgs::Float32>(_robot_ns + "/theta_error", 1); // Global path generated from another source
+    }
     //Publishers and Subscribers
     _sub_odom   = _nh.subscribe("/odom", 1, &MPCNode::odomCB, this);
-    _sub_path   = _nh.subscribe( _globalPath_topic, 1, &MPCNode::pathCB, this);
-    _sub_gen_path   = _nh.subscribe( "desired_path", 1, &MPCNode::desiredPathCB, this);
-    _sub_goal   = _nh.subscribe( _goal_topic, 1, &MPCNode::goalCB, this);
+    _sub_path   = _nh.subscribe(_globalPath_topic, 1, &MPCNode::pathCB, this);
+    _sub_gen_path   = _nh.subscribe("desired_path", 1, &MPCNode::desiredPathCB, this);
+    _sub_goal   = _nh.subscribe(_goal_topic, 1, &MPCNode::goalCB, this);
     _sub_amcl   = _nh.subscribe("/amcl_pose", 5, &MPCNode::amclCB, this);
     
     _pub_odompath  = _nh.advertise<nav_msgs::Path>("/mpc_reference", 1); // reference path for MPC ///mpc_reference 
@@ -597,7 +627,15 @@ int main(int argc, char **argv)
 {
     //Initiate ROS
     ros::init(argc, argv, "MPC_Node");
-    MPCNode mpc_node;
+
+    std::string robot_ns;
+    bool use_ns;
+
+    ros::NodeHandle n;
+    n.param("robot_namespace", robot_ns);
+    n.param("use_namespace", use_ns, false);
+
+    MPCNode mpc_node(robot_ns, use_ns);
 
     ROS_INFO("Waiting for global path msgs ~");
     ros::AsyncSpinner spinner(mpc_node.get_thread_numbers()); // Use multi threads

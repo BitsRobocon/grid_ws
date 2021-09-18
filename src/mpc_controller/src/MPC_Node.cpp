@@ -20,11 +20,13 @@
 #include <math.h>
 
 #include <ros/ros.h>
+#include <ros/service_server.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
 #include <tf/transform_listener.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Bool.h>
 
 // #include <tf/transform_datatypes.h>
 #include <nav_msgs/Path.h>
@@ -63,6 +65,8 @@ class MPCNode
         ros::NodeHandle _nh;
         ros::Subscriber _sub_odom, _sub_gen_path, _sub_path, _sub_goal, _sub_amcl;
         ros::Publisher _pub_totalcost, _pub_ctecost, _pub_ethetacost,_pub_odompath, _pub_twist, _pub_mpctraj;
+        ros::Publisher _pub_goal_status;
+        // ros::ServiceServer _goal_reach_trigger_service;
         ros::Timer _timer1;
         tf::TransformListener _tf_listener;
 
@@ -72,7 +76,7 @@ class MPCNode
 	//ackermann_msgs::AckermannDriveStamped _ackermann_msg;
         geometry_msgs::Twist _twist_msg;
 
-        string _globalPath_topic, _goal_topic;
+        string _globalPath_topic, _goal_topic, _goal_status_topic;
         string _map_frame, _odom_frame, _car_frame;
         string _robot_ns;
 
@@ -151,9 +155,11 @@ MPCNode::MPCNode(std::string robot_ns, bool use_ns)
     pn.param<std::string>("map_frame", _map_frame, "odom" ); //*****for mpc, "odom"
     pn.param<std::string>("odom_frame", _odom_frame, "odom");
     pn.param<std::string>("car_frame", _car_frame, "base_footprint" );
+    pn.param<std::string>("goal_status_topic", _goal_status_topic, "goal_status");
 
     if(_use_ns) {
         _globalPath_topic = _robot_ns + "/" + _globalPath_topic;
+        _goal_status_topic = _robot_ns + "/" + _goal_status_topic;
         _goal_topic = _robot_ns + "/" + _goal_topic;
         _odom_frame = _robot_ns + "/" + _odom_frame;
         _car_frame = _robot_ns + "/" + _car_frame;
@@ -177,7 +183,7 @@ MPCNode::MPCNode(std::string robot_ns, bool use_ns)
         //Publishers and Subscribers
         _sub_odom   = _nh.subscribe(_robot_ns + "/odom", 1, &MPCNode::odomCB, this);
         _sub_path   = _nh.subscribe(_globalPath_topic, 1, &MPCNode::pathCB, this);
-        _sub_gen_path   = _nh.subscribe(_robot_ns + "desired_path", 1, &MPCNode::desiredPathCB, this);
+        _sub_gen_path   = _nh.subscribe(_globalPath_topic, 1, &MPCNode::desiredPathCB, this);
         _sub_goal   = _nh.subscribe(_goal_topic, 1, &MPCNode::goalCB, this);
         _sub_amcl   = _nh.subscribe(_robot_ns + "/amcl_pose", 5, &MPCNode::amclCB, this);
         
@@ -193,8 +199,9 @@ MPCNode::MPCNode(std::string robot_ns, bool use_ns)
     }
     //Publishers and Subscribers
     _sub_odom   = _nh.subscribe("/odom", 1, &MPCNode::odomCB, this);
+    // Note that pathCB is no longer being used. Use sub_gen_path instead.
     _sub_path   = _nh.subscribe(_globalPath_topic, 1, &MPCNode::pathCB, this);
-    _sub_gen_path   = _nh.subscribe("desired_path", 1, &MPCNode::desiredPathCB, this);
+    _sub_gen_path   = _nh.subscribe(_globalPath_topic, 1, &MPCNode::desiredPathCB, this);
     _sub_goal   = _nh.subscribe(_goal_topic, 1, &MPCNode::goalCB, this);
     _sub_amcl   = _nh.subscribe("/amcl_pose", 5, &MPCNode::amclCB, this);
     
@@ -207,6 +214,7 @@ MPCNode::MPCNode(std::string robot_ns, bool use_ns)
     _pub_totalcost  = _nh.advertise<std_msgs::Float32>("/total_cost", 1); // Global path generated from another source
     _pub_ctecost  = _nh.advertise<std_msgs::Float32>("/cross_track_error", 1); // Global path generated from another source
     _pub_ethetacost  = _nh.advertise<std_msgs::Float32>("/theta_error", 1); // Global path generated from another source
+    _pub_goal_status = _nh.advertise<std_msgs::Bool>(_goal_status_topic, 1);
     
     //Timer
     _timer1 = _nh.createTimer(ros::Duration((1.0)/_controller_freq), &MPCNode::controlLoopCB, this); // 10Hz //*****mpc
@@ -301,6 +309,20 @@ Eigen::VectorXd MPCNode::polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals, i
 void MPCNode::odomCB(const nav_msgs::Odometry::ConstPtr& odomMsg)
 {
     _odom = *odomMsg;
+    if(_goal_received)
+    {
+        double car2goal_x = _goal_pos.x - odomMsg->pose.pose.position.x;
+        double car2goal_y = _goal_pos.y - odomMsg->pose.pose.position.y;
+        double dist2goal = sqrt(car2goal_x*car2goal_x + car2goal_y*car2goal_y);
+        if(dist2goal < _goalRadius)
+        {
+            _goal_received = false;
+            _goal_reached = true;
+            _path_computed = false;
+            ROS_INFO("Goal Reached !");
+        }
+        _pub_goal_status.publish(_goal_reached);
+    }
     
 }
 

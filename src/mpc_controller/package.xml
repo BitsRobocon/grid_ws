@@ -64,6 +64,7 @@
   <depend>Eigen3</depend>
   <depend>Boost</depend>
   <depend>ipopt</depend>
+  <depend>message_generation</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

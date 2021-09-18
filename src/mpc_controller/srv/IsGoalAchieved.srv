@@ -1,0 +1,4 @@
+---
+bool success # indicate a successfull run of the service. False on failure.
+bool is_goal_reached
+string robot_ns

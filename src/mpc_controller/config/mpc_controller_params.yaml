@@ -7,6 +7,7 @@ waypoints_dist: -1.0 # unit: m, set < 0 means computed by node
 path_length: 5.0 # unit: m
 goal_radius: 0.5 # unit: m
 controller_freq: 10
+thread_numbers: 4 # Enabling 4 parallel processing threads.
 
 # Parameter for MPC solver
 mpc_steps: 20.0
@@ -23,3 +24,15 @@ mpc_w_accel_d: 0.0
 mpc_max_angvel: 1.5 
 mpc_max_throttle: 1.0 # Maximal throttle accel
 mpc_bound_value: 1.0e3 # Bound value for other variables
+
+# General topic commands
+# Except for map_frame all the other following parameters will be prefixed
+# by the robot namespace.
+global_path_topic: "cmd_global_trajectory" # used to publish the global path.
+goal_topic: "cmd_goal" # used to publish the goal.
+goal_status_topic: "is_goal_reached" # used to publish the goal status.
+
+# All frames prefixed with namespace except for map.
+map_frame: "map" # Won't be namespaced.
+odom_frame: "odom"
+car_frame: "base_footprint"

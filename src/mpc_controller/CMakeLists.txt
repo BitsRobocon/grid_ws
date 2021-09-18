@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
     tf
     visualization_msgs
+    message_generation
 )
 
 find_package(cmake_modules REQUIRED)
@@ -68,11 +69,10 @@ find_package(Boost REQUIRED)
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  IsGoalAchieved.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(

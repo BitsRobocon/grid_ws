@@ -1,0 +1,4 @@
+commands publish to odom/twist  -- provides linear and angular velocities
+get position from odom/pose
+get motor angles from joint_group_position_controller/points
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<launch>
+
+  <param command="$(find xacro)/xacro $(find vakra_description)/urdf/vakra.xacro" name="robot_description"/>
+
+  <node args="-param robot_description -urdf -model vakra" name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <arg name="world_name" value="$(find vakra_description)/worlds/test_friction.world"/>
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+<rosparam file="$(find vakra_description)/launch/controller.yaml" command="load"/>
+<node args="joint_state_controller rff_position_controller rfs_position_controller lff_position_controller lfs_position_controller rbf_position_controller rbs_position_controller lbf_position_controller lbs_position_controller lft_position_controller lbt_position_controller rbt_position_controller rft_position_controller" name="controller_spawner" ns="/vakra" output="screen" pkg="controller_manager" respawn="false" type="spawner"/>
+<node name="robot_state_pub" output="screen" pkg="robot_state_publisher" respawn="false" type="robot_state_publisher">
+<remap from="/joint_states" to="/vakra/joint_states"/>
+</node>
+
+<node name="map_broadcaster" pkg="vakra_description" type="vakra_description_node" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="very_inaccurate_odom" args="0 0 0 0 0 0 odom base_footprint"/>
+<node pkg="map_server" name="map_server" type="map_server" args="$(find vakra_description)/map/grid.yaml"/>
+
+<node pkg="costmap_2d" type="costmap_2d_markers" name="voxel_visualizer">
+  <remap from="voxel_grid" to="costmap/voxel_grid"/>
+</node>
+
+<!-- Run the costmap node -->
+<node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
+<rosparam file="$(find vakra_description)/src/costmap.yaml" command="load" ns="costmap" />
+</node>
+</launch>
+
+

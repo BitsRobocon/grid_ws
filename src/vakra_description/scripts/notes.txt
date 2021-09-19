@@ -1,0 +1,31 @@
+0-lfh		-0.272		-15.58
+1-lft		0.892		51.11
+2-lfs		-1.677		-96.09
+3-rfh		0.272		15.58
+4-rft		0.892		51.11
+5-rfs		-1.677		-96.09
+6-lhh		-0.272		-15.58
+7-lht		0.892		51.11
+8-lhs		-1.677		-96.09
+9-rhh		0.272		15.58
+10-rht		0.892		51.11
+11-rhs		-1.677		-96.09
+
+odom
+	pose
+		orientation		
+			yaw_deg
+		position
+			x,y,~z
+	twist
+		angular
+			z
+		linear
+			x,y
+
+/cmd_vel/smooth  -  geometry_msgs/Twist
+/joint_group_position_controller/command  -  trajectory_msgs/JointTrajectory
+/joint_states  -  sensor_msgs/JointState
+/odom  -  nav_msgs/Odometry
+
+

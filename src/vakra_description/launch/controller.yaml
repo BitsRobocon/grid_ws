@@ -1,0 +1,55 @@
+vakra:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers --------------------------------------
+  rff_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rff
+    pid: {p: 60.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  rfs_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rfs
+    pid: {p: 75.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  lff_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lff
+    pid: {p: 60.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  lfs_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lfs
+    pid: {p: 75.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  rbf_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rbf
+    pid: {p: 60.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  rbs_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rbs
+    pid: {p: 75.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  lbf_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lbf
+    pid: {p: 60.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  lbs_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lbs
+    pid: {p: 75.0, i: 5.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  lft_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lft
+    pid: {p: 50.0, i: 10.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  lbt_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lbt
+    pid: {p: 50.0, i: 10.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  rbt_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rbt
+    pid: {p: 50.0, i: 10.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}
+  rft_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rft
+    pid: {p: 50.0, i: 10.0, d: 0.0, i_clamp_min: -10.0, i_clamp_max: 10}

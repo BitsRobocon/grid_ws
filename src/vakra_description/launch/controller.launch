@@ -1,0 +1,9 @@
+<launch>
+
+<rosparam file="$(find vakra_description)/launch/controller.yaml" command="load"/>
+<node args="joint_state_controller rff_position_controller rfs_position_controller lff_position_controller lfs_position_controller rbf_position_controller rbs_position_controller lbf_position_controller lbs_position_controller lft_position_controller lbt_position_controller rbt_position_controller rft_position_controller" name="controller_spawner" ns="/vakra" output="screen" pkg="controller_manager" respawn="false" type="spawner"/>
+<node name="robot_state_publisher" output="screen" pkg="robot_state_publisher" respawn="false" type="robot_state_publisher">
+  <remap from="/joint_states" to="/vakra/joint_states"/>
+</node>
+
+</launch>

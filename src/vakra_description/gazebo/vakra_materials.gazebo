@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<robot name="vakra" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<xacro:property name="Black" value="Gazebo/Black" />
+<xacro:property name="Green" value="Gazebo/Green" />
+<xacro:property name="Silver" value="Gazebo/Silver" />
+<xacro:property name="Blue" value="Gazebo/Blue" />
+
+<gazebo reference="base_link">
+  <material>${Black}</material>
+</gazebo>
+
+<gazebo reference="femur1__1__1">
+  <material>${Blue}</material>
+</gazebo>
+
+<gazebo reference="Shoulder1__1__1">
+  <material>${Green}</material>
+</gazebo>
+
+<gazebo reference="femur1_1">
+  <material>${Blue}</material>
+</gazebo>
+
+<gazebo reference="Shoulder1_1">
+  <material>${Green}</material>
+</gazebo>
+
+<gazebo reference="femur2__1__1">
+  <material>${Blue}</material>
+</gazebo>
+
+<gazebo reference="Shoulder2__1__1">
+  <material>${Green}</material>
+</gazebo>
+
+<gazebo reference="femur2_1">
+  <material>${Blue}</material>
+</gazebo>
+
+<gazebo reference="Shoulder2_1">
+  <material>${Green}</material>
+</gazebo>
+
+<gazebo reference="tibia1_1">
+  <material>${Silver}</material>
+</gazebo>
+
+<gazebo reference="tibia2_1">
+  <material>${Silver}</material>
+</gazebo>
+
+<gazebo reference="tibia2__1__1">
+  <material>${Silver}</material>
+</gazebo>
+
+<gazebo reference="tibia1__1__1">
+  <material>${Silver}</material>
+</gazebo>
+
+</robot>

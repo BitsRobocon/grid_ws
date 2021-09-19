@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<robot name="vakra" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<xacro:property name="body_color" value="Gazebo/Silver" />
+
+<gazebo>
+  <plugin filename="libgazebo_ros_control.so" name="control">
+  <robotNamespace>/vakra</robotNamespace>
+  </plugin>
+</gazebo>
+
+</robot>

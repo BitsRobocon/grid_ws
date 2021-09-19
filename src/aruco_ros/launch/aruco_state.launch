@@ -1,0 +1,3 @@
+<launch>
+    <node name="state_from_aruco" pkg="aruco_ros" type="detect_state_ros.py" output="screen" />
+</launch>

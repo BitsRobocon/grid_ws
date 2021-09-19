@@ -253,7 +253,7 @@ def main_motion_planner():
 	bot1_goal_pub.publish(bot1_pose)
 
 	print("Waiting for bot1 to reach start...")
-	while bot1_return_flag == 0:
+	while bot1_goal_flag == 0:
 		rate.sleep()
 	print("Confirmation received. Next bot GO!\n")
 
@@ -338,7 +338,7 @@ def main_motion_planner():
 	bot2_goal_pub.publish(bot2_pose)
 
 	print("Waiting for bot2 to reach start...")
-	while bot2_return_flag == 0:
+	while bot2_goal_flag == 0:
 		rate.sleep()
 	print("Confirmation received. Next bot GO!\n")
 
@@ -423,7 +423,7 @@ def main_motion_planner():
 	bot3_goal_pub.publish(bot3_pose)
 
 	print("Waiting for bot3 to reach start...")
-	while bot3_return_flag == 0:
+	while bot3_goal_flag == 0:
 		rate.sleep()
 	print("Confirmation received. Next bot GO!\n")
 
@@ -526,11 +526,11 @@ if __name__=='__main__' :
 	mp_map_sub = rospy.Subscriber('/costmap_node/costmap/costmap', OccupancyGrid, callback)  # Create a Subscriber object that will listen to the given topic and will call the "callback" function each time it reads something from the topic
 	
 	bot1_goal_sub = rospy.Subscriber('/bot1/goal_feedback', Bool, bot1_goal_feedback)
-	bot1_return_sub = rospy.Subscriber('/bot1/return_feedback', Bool, bot1_return_feedback)
+	# bot1_return_sub = rospy.Subscriber('/bot1/return_feedback', Bool, bot1_return_feedback)
 	bot2_goal_sub = rospy.Subscriber('/bot2/goal_feedback', Bool, bot2_goal_feedback)
-	bot2_return_sub = rospy.Subscriber('/bot2/return_feedback', Bool, bot2_return_feedback)
+	# bot2_return_sub = rospy.Subscriber('/bot2/return_feedback', Bool, bot2_return_feedback)
 	bot3_goal_sub = rospy.Subscriber('/bot3/goal_feedback', Bool, bot3_goal_feedback)
-	bot3_return_sub = rospy.Subscriber('/bot3/return_feedback', Bool, bot3_return_feedback)
+	# bot3_return_sub = rospy.Subscriber('/bot3/return_feedback', Bool, bot3_return_feedback)
 	bot4_goal_sub = rospy.Subscriber('/bot4/goal_feedback', Bool, bot4_goal_feedback)
 
 	bot1_traj_pub = rospy.Publisher('/bot1/trajectory_publisher', Path, queue_size=10)

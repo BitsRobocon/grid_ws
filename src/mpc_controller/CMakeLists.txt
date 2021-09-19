@@ -185,7 +185,6 @@ add_executable(
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries( mpc_node
-#   ${ipopt_LIBS}
   ipopt
   ${EIGEN3_LIBS}
   ${catkin_LIBRARIES}

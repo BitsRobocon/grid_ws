@@ -75,6 +75,7 @@ class MPCNode
         nav_msgs::Path _odom_path, _mpc_traj; 
 	//ackermann_msgs::AckermannDriveStamped _ackermann_msg;
         geometry_msgs::Twist _twist_msg;
+        std_msgs::Bool _goal_status_msg;
 
         string _globalPath_topic, _goal_topic, _goal_status_topic;
         string _map_frame, _odom_frame, _car_frame;
@@ -321,7 +322,8 @@ void MPCNode::odomCB(const nav_msgs::Odometry::ConstPtr& odomMsg)
             _path_computed = false;
             ROS_INFO("Goal Reached !");
         }
-        _pub_goal_status.publish(_goal_reached);
+        _goal_status_msg.data = _goal_reached;
+        _pub_goal_status.publish(_goal_status_msg);
     }
     
 }

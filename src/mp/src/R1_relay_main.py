@@ -133,6 +133,24 @@ def main_motion_planner():
 	#print(R1_obstacles)
 	#Plan route
 
+	## code to covert larger start goal pos to shrinked start goal 
+	## start_large  and goal_large are the array given as inputs
+
+	start_large =[[58, 56],
+				  [58, 62],
+				  [58, 66],
+				  [58, 72]]
+	goal_large = [[11, 16],
+				  [7, 18],
+				  [7, 112],
+				  [11, 112]]
+
+	start = []
+	goal = []
+	for i  in range(4):
+		start.append([((start_large[i][0]-offset)/skip+1),((start_large[i][1]-offset)/skip+1)])
+		goal.append([((goal_large[i][0]-offset)/skip+1),((goal_large[i][1]-offset)/skip+1)])
+
 	start =[[58, 56],
 			[58, 62],
 			[58, 66],

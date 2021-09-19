@@ -1,4 +1,7 @@
 <launch>
+    <!-- Launching the mpc parameters file. -->
+    <rosparam command="load" file="$(find mpc_controller)/config/mpc_controller_params.yaml"/>
+    
     <!-- Robot 1 -->
     <node pkg="mpc_controller" name="mpc_node_1" type="mpc_npde" output="screen">
         <param name="robot_namespace" type="string" value="bot1"/>

@@ -13,7 +13,7 @@ src/mpc_ros
 build/
 devel/**
 logs/
-
+.DS_Store
 # Allowing setup_env.bash to be added to the workspace
 !devel/setup_env.bash
 !setup_env.bash
